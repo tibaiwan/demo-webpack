@@ -1,9 +1,16 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 const isDev = process.env.NODE_ENV === 'development';
 const config = require('./public/config')[isDev ? 'dev' : 'build'];
 
 module.exports = {
+    entry: './src/index.js',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.[hash:6].js'
+    },
     mode: isDev ? 'development' : 'production',
     devtool: 'cheap-module-eval-source-map',
     module: {
@@ -17,6 +24,20 @@ module.exports = {
                 test: /\.(c|le)ss$/,
                 use: ['style-loader', 'css-loader', 'less-loader'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif)$/,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10240, //10K
+                        esModule: true,
+                        name: '[name]_[hash:10].[ext]',
+                        outputPath: 'assets',
+                        publicPath: '//baidu.com'
+                    }
+                }],
+                exclude: /node_modules/
             }
         ]
     },
@@ -25,7 +46,8 @@ module.exports = {
             template: './public/index.html',
             filename: 'index.html',
             config: config.template
-        })
+        }),
+        new CleanWebpackPlugin()
     ],
     devServer: {
         port: '3000', //默认是8080
