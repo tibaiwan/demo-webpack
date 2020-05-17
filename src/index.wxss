@@ -1,0 +1,9 @@
+body {
+  background: yellow;
+  transition: all 2s;
+  background-image: url(assets/images/logo.png);
+  background-repeat: no-repeat;
+}
+body h1 {
+  background-color: green;
+}
