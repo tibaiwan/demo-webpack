@@ -1,5 +1,7 @@
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.base');
+const happyConfig = require('./webpack.config.happy');
+const threadConfig = require('./webpack.config.thread');
 
 module.exports = merge(baseConfig, {
     mode: 'development',

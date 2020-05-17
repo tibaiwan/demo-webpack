@@ -1,12 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
+const Happypack = require('happypack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssPlugin = require('mini-css-extract-plugin');
-const OptimizeCssPlugin = require('optimize-css-assets-webpack-plugin');
+// const MiniCssPlugin = require('mini-css-extract-plugin');
+// const OptimizeCssPlugin = require('optimize-css-assets-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const config = require('./public/config')['dev'];
 
@@ -20,17 +20,15 @@ module.exports = {
         filename: '[name].[hash:6].js'
     },
     module: {
-        noParse: /jquery|lodash/,
         rules: [
             {
                 test: /\.js$/,
-                use: ['cache-loader', 'babel-loader'],
+                use: 'Happypack/loader?id=js',
                 include: [path.resolve(__dirname, 'src')]
             },
             {
                 test: /\.(c|le)ss$/,
-                use: [MiniCssPlugin.loader, 'css-loader', 'less-loader'],
-                include: [path.resolve(__dirname, 'src')]
+                use: 'Happypack/loader?id=less',
             },
             {
                 test: /\.(png|jpg|jpeg|gif)$/,
@@ -44,7 +42,7 @@ module.exports = {
                         publicPath: '//baidu.com'
                     }
                 }],
-                include: [path.resolve(__dirname, 'src')]
+                exclude: /node_modules/
             }
         ]
     },
@@ -73,16 +71,23 @@ module.exports = {
             React: 'react',
             _map: ['lodash', 'map']
         }),
-        new MiniCssPlugin({
-            filename: 'css/[name]_[hash:6].css'
-        }),
-        new OptimizeCssPlugin(),
+        // new MiniCssPlugin({
+        //     filename: 'css/[name]_[hash:6].css'
+        // }),
+        // new OptimizeCssPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.DefinePlugin({
             Flag: {a: 12}
         }),
         new SpeedMeasurePlugin(),
-        new HardSourceWebpackPlugin()
+        new Happypack({
+            id: 'js',
+            use: ['babel-loader']
+        }),
+        new Happypack({
+            id: 'less',
+            use: ['style-loader', 'css-loader', 'less-loader']
+        }),
     ],
     resolve: {
         alias: {

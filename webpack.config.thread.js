@@ -6,7 +6,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssPlugin = require('mini-css-extract-plugin');
 const OptimizeCssPlugin = require('optimize-css-assets-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const config = require('./public/config')['dev'];
 
@@ -20,11 +19,10 @@ module.exports = {
         filename: '[name].[hash:6].js'
     },
     module: {
-        noParse: /jquery|lodash/,
         rules: [
             {
                 test: /\.js$/,
-                use: ['cache-loader', 'babel-loader'],
+                use: ['thread-loader', 'cache-loader', 'babel-loader'],
                 include: [path.resolve(__dirname, 'src')]
             },
             {
@@ -82,7 +80,6 @@ module.exports = {
             Flag: {a: 12}
         }),
         new SpeedMeasurePlugin(),
-        new HardSourceWebpackPlugin()
     ],
     resolve: {
         alias: {
